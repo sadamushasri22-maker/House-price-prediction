@@ -1,0 +1,19 @@
+COLUMNS:
+  date: object
+  price: float64
+  bedrooms: int64
+  bathrooms: float64
+  sqft_living: int64
+  sqft_lot: int64
+  floors: float64
+  waterfront: int64
+  view: int64
+  condition: int64
+  sqft_above: int64
+  sqft_basement: int64
+  yr_built: int64
+  yr_renovated: int64
+  street: object
+  city: object
+  statezip: object
+  country: object

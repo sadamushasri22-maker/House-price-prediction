@@ -1,0 +1,7 @@
+[ 2026-07-22 14:50:36,102 ] INFO - Data ingestion started
+[ 2026-07-22 14:50:36,180 ] INFO - Train and Test data saved successfully
+[ 2026-07-22 14:50:36,243 ] INFO - Schema loaded successfully.
+[ 2026-07-22 14:50:36,244 ] INFO - Validation Status: True
+[ 2026-07-22 14:50:36,274 ] INFO - Train and Test data loaded successfully
+[ 2026-07-22 14:50:36,274 ] INFO - Preprocessor object created successfully
+[ 2026-07-22 14:50:36,323 ] INFO - Preprocessor object saved successfully

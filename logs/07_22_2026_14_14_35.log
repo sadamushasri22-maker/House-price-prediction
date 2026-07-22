@@ -1,0 +1,5 @@
+[ 2026-07-22 14:14:35,697 ] INFO - Data ingestion started
+[ 2026-07-22 14:14:35,758 ] INFO - Train and Test data saved successfully
+[ 2026-07-22 14:14:35,825 ] INFO - Train and Test data loaded successfully
+[ 2026-07-22 14:14:35,825 ] INFO - Preprocessor object created successfully
+[ 2026-07-22 14:14:35,889 ] INFO - Preprocessor object saved successfully
