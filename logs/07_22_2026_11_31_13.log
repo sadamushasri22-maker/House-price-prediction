@@ -1,0 +1,5 @@
+[ 2026-07-22 11:31:13,760 ] INFO - Entered the Data Ingestion method
+[ 2026-07-22 11:31:13,806 ] INFO - Dataset loaded successfully
+[ 2026-07-22 11:31:13,830 ] INFO - Raw data saved successfully
+[ 2026-07-22 11:31:13,830 ] INFO - Performing train-test split
+[ 2026-07-22 11:31:13,855 ] INFO - Train-test split completed
