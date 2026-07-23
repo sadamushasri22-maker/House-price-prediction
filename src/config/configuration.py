@@ -15,6 +15,13 @@ from src.entity.config_entity import (
     ModelTrainerConfig
 )
 
+from src.entity.config_entity import (
+    DataIngestionConfig,
+    DataValidationConfig,
+    DataTransformationConfig,
+    ModelTrainerConfig,
+    ModelEvaluationConfig
+)
 
 class ConfigurationManager:
 
@@ -68,3 +75,16 @@ class ConfigurationManager:
     )
 
         return model_trainer_config
+    
+    def get_model_evaluation_config(self):
+
+     config = self.config["model_evaluation"]
+
+     os.makedirs(config["root_dir"], exist_ok=True)
+
+     model_evaluation_config = ModelEvaluationConfig(
+        root_dir=config["root_dir"],
+        metric_file_name=config["metric_file_name"]
+    )
+
+     return model_evaluation_config

@@ -1,14 +1,33 @@
 import sys
 
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import (
+    LinearRegression,
+    Ridge,
+    Lasso,
+    ElasticNet,
+)
+
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.ensemble import RandomForestRegressor
+
+from sklearn.ensemble import (
+    RandomForestRegressor,
+    ExtraTreesRegressor,
+    GradientBoostingRegressor,
+    AdaBoostRegressor,
+)
+
 from sklearn.metrics import r2_score
+
+from xgboost import XGBRegressor
+from lightgbm import LGBMRegressor
+from catboost import CatBoostRegressor
 
 from src.entity.config_entity import ModelTrainerConfig
 from src.exception import CustomException
 from src.logger import logging
 from src.utils.common import save_object
+
+from sklearn.model_selection import RandomizedSearchCV
 
 
 class ModelTrainer:
@@ -28,8 +47,54 @@ class ModelTrainer:
 
             models = {
                 "Linear Regression": LinearRegression(),
-                "Decision Tree": DecisionTreeRegressor(random_state=42),
-                "Random Forest": RandomForestRegressor(random_state=42),
+
+                "Ridge": Ridge(random_state=42),
+
+                "Lasso": Lasso(random_state=42),
+
+                "ElasticNet": ElasticNet(random_state=42),
+
+                "Decision Tree": DecisionTreeRegressor(
+                    random_state=42
+                ),
+
+                "Random Forest": RandomForestRegressor(
+                    n_estimators=300,
+                    random_state=42,
+                    n_jobs=-1,
+                ),
+
+                "Extra Trees": ExtraTreesRegressor(
+                    n_estimators=300,
+                    random_state=42,
+                    n_jobs=-1,
+                ),
+
+                "Gradient Boosting": GradientBoostingRegressor(
+                    random_state=42,
+                ),
+
+                "AdaBoost": AdaBoostRegressor(
+                    random_state=42,
+                ),
+
+                "XGBoost": XGBRegressor(
+                    objective="reg:squarederror",
+                    n_estimators=300,
+                    learning_rate=0.05,
+                    max_depth=6,
+                    random_state=42,
+                ),
+
+                "LightGBM": LGBMRegressor(
+                    n_estimators=300,
+                    random_state=42,
+                ),
+
+                "CatBoost": CatBoostRegressor(
+                    verbose=0,
+                    random_state=42,
+                ),
             }
 
             best_model = None

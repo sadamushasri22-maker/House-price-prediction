@@ -27,3 +27,8 @@ class DataTransformationConfig:
 class ModelTrainerConfig:
     root_dir: Path
     trained_model_file_path: Path
+
+@dataclass(frozen=True)
+class ModelEvaluationConfig:
+    root_dir: Path
+    metric_file_name: Path

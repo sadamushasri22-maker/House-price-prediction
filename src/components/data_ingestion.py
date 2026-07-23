@@ -17,7 +17,11 @@ class DataIngestion:
         logging.info("Data ingestion started")
 
         try:
+            #df = pd.read_csv(self.config.input_data_path)
             df = pd.read_csv(self.config.input_data_path)
+
+# Remove invalid rows
+            df = df[df["price"] > 0].reset_index(drop=True)
 
             os.makedirs(self.config.root_dir, exist_ok=True)
 

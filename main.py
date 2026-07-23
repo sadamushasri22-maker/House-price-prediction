@@ -3,7 +3,7 @@ from src.components.data_ingestion import DataIngestion
 from src.components.data_validation import DataValidation
 from src.components.data_transformation import DataTransformation
 from src.components.model_trainer import ModelTrainer
-
+from src.components.model_evaluation import ModelEvaluation
 
 if __name__ == "__main__":
 
@@ -67,3 +67,19 @@ if __name__ == "__main__":
         )
 
         print("Model Training Completed")
+        
+
+        # =========================
+        # Model Evaluation
+        # =========================
+        evaluation_config = config.get_model_evaluation_config()
+
+        model_evaluation = ModelEvaluation(evaluation_config)
+
+        model_evaluation.initiate_model_evaluation(
+            trainer_config.trained_model_file_path,
+            test_arr,
+            test_target
+        )
+
+        print("Model Evaluation Completed")

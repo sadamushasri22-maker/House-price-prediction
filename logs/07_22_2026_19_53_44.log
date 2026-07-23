@@ -1,0 +1,10 @@
+[ 2026-07-22 19:53:47,098 ] INFO - Data ingestion started
+[ 2026-07-22 19:53:47,395 ] INFO - Train and Test data saved successfully
+[ 2026-07-22 19:53:47,471 ] INFO - Schema loaded successfully.
+[ 2026-07-22 19:53:47,475 ] INFO - Validation Status: True
+[ 2026-07-22 19:53:47,547 ] INFO - Train and Test data loaded successfully
+[ 2026-07-22 19:53:47,547 ] INFO - Preprocessor object created successfully
+[ 2026-07-22 19:53:47,661 ] INFO - Preprocessor object saved successfully
+[ 2026-07-22 19:53:47,663 ] INFO - Training Linear Regression
+[ 2026-07-22 19:53:48,295 ] INFO - Training Decision Tree
+[ 2026-07-22 19:53:48,900 ] INFO - Training Random Forest
