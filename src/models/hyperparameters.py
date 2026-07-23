@@ -8,17 +8,4 @@ xgb_params = {
     "gamma": [0, 0.1, 0.2],
 }
 
-# CatBoost Parameters
-catboost_params = {
-    "iterations": [200, 300, 500],
-    "depth": [4, 6, 8, 10],
-    "learning_rate": [0.01, 0.03, 0.05, 0.1],
-}
-
-# Extra Trees Parameters
-extra_trees_params = {
-    "n_estimators": [200, 300, 500],
-    "max_depth": [None, 10, 20, 30],
-    "min_samples_split": [2, 5, 10],
-    "min_samples_leaf": [1, 2, 4],
-}
+ 

@@ -80,3 +80,10 @@ def get_models():
     }
 
     return models
+
+def get_xgboost():
+
+     return XGBRegressor(
+        objective="reg:squarederror",
+        random_state=42,
+    )

@@ -1,33 +1,18 @@
 import sys
 
-from sklearn.linear_model import (
-    LinearRegression,
-    Ridge,
-    Lasso,
-    ElasticNet,
-)
-
-from sklearn.tree import DecisionTreeRegressor
-
-from sklearn.ensemble import (
-    RandomForestRegressor,
-    ExtraTreesRegressor,
-    GradientBoostingRegressor,
-    AdaBoostRegressor,
-)
-
 from sklearn.metrics import r2_score
-
-from xgboost import XGBRegressor
-from lightgbm import LGBMRegressor
-from catboost import CatBoostRegressor
 
 from src.entity.config_entity import ModelTrainerConfig
 from src.exception import CustomException
 from src.logger import logging
 from src.utils.common import save_object
 
-from sklearn.model_selection import RandomizedSearchCV
+from src.models.model_factory import (
+    get_models,
+    get_xgboost,
+)
+from src.models.hyperparameters import xgb_params
+from src.models.model_tuner import tune_model
 
 
 class ModelTrainer:
@@ -45,60 +30,13 @@ class ModelTrainer:
 
         try:
 
-            models = {
-                "Linear Regression": LinearRegression(),
-
-                "Ridge": Ridge(random_state=42),
-
-                "Lasso": Lasso(random_state=42),
-
-                "ElasticNet": ElasticNet(random_state=42),
-
-                "Decision Tree": DecisionTreeRegressor(
-                    random_state=42
-                ),
-
-                "Random Forest": RandomForestRegressor(
-                    n_estimators=300,
-                    random_state=42,
-                    n_jobs=-1,
-                ),
-
-                "Extra Trees": ExtraTreesRegressor(
-                    n_estimators=300,
-                    random_state=42,
-                    n_jobs=-1,
-                ),
-
-                "Gradient Boosting": GradientBoostingRegressor(
-                    random_state=42,
-                ),
-
-                "AdaBoost": AdaBoostRegressor(
-                    random_state=42,
-                ),
-
-                "XGBoost": XGBRegressor(
-                    objective="reg:squarederror",
-                    n_estimators=300,
-                    learning_rate=0.05,
-                    max_depth=6,
-                    random_state=42,
-                ),
-
-                "LightGBM": LGBMRegressor(
-                    n_estimators=300,
-                    random_state=42,
-                ),
-
-                "CatBoost": CatBoostRegressor(
-                    verbose=0,
-                    random_state=42,
-                ),
-            }
+            # Get all baseline models
+            models = get_models()
 
             best_model = None
-            best_score = -1
+            best_score = float("-inf")
+
+            print("\n========== Baseline Model Comparison ==========\n")
 
             for model_name, model in models.items():
 
@@ -116,13 +54,52 @@ class ModelTrainer:
                     best_score = score
                     best_model = model
 
+            print("\n==============================================")
+            print(f"Best Baseline Score : {best_score:.4f}")
+            print("==============================================")
+
+            # -------------------------------
+            # Hyperparameter Tuning (XGBoost)
+            # -------------------------------
+
+            print("\nStarting XGBoost Hyperparameter Tuning...\n")
+
+            tuned_model = tune_model(
+                model=get_xgboost(),
+                params=xgb_params,
+                X_train=train_array,
+                y_train=train_target,
+            )
+
+            tuned_predictions = tuned_model.predict(test_array)
+
+            tuned_score = r2_score(
+                test_target,
+                tuned_predictions,
+            )
+
+            print(f"\nTuned XGBoost R2 Score : {tuned_score:.4f}")
+
+            if tuned_score > best_score:
+
+                print("\n✅ Tuned XGBoost performed better.")
+
+                best_model = tuned_model
+                best_score = tuned_score
+
+            else:
+
+                print("\nℹ️ Baseline model is still better.")
+
             save_object(
                 file_path=self.config.trained_model_file_path,
                 obj=best_model,
             )
 
-            print("\nBest Model Saved Successfully")
-            print(f"Best R2 Score : {best_score:.4f}")
+            print("\n==============================================")
+            print("Best Model Saved Successfully")
+            print(f"Final Best R2 Score : {best_score:.4f}")
+            print("==============================================")
 
         except Exception as e:
             raise CustomException(e, sys)

@@ -1,0 +1,20 @@
+[ 2026-07-23 13:08:12,878 ] INFO - Data ingestion started
+[ 2026-07-23 13:08:12,978 ] INFO - Train and Test data saved successfully
+[ 2026-07-23 13:08:13,024 ] INFO - Schema loaded successfully.
+[ 2026-07-23 13:08:13,026 ] INFO - Validation Status: True
+[ 2026-07-23 13:08:13,085 ] INFO - Train and Test data loaded successfully
+[ 2026-07-23 13:08:13,085 ] INFO - Preprocessor object created successfully
+[ 2026-07-23 13:08:13,169 ] INFO - Preprocessor object saved successfully
+[ 2026-07-23 13:08:13,171 ] INFO - Training Linear Regression
+[ 2026-07-23 13:08:13,539 ] INFO - Training Ridge
+[ 2026-07-23 13:08:13,587 ] INFO - Training Lasso
+[ 2026-07-23 13:08:40,199 ] INFO - Training ElasticNet
+[ 2026-07-23 13:08:40,271 ] INFO - Training Decision Tree
+[ 2026-07-23 13:08:40,689 ] INFO - Training Random Forest
+[ 2026-07-23 13:08:49,933 ] INFO - Training Extra Trees
+[ 2026-07-23 13:09:03,112 ] INFO - Training Gradient Boosting
+[ 2026-07-23 13:09:04,487 ] INFO - Training AdaBoost
+[ 2026-07-23 13:09:05,078 ] INFO - Training XGBoost
+[ 2026-07-23 13:09:06,910 ] INFO - Training LightGBM
+[ 2026-07-23 13:09:08,848 ] INFO - Training CatBoost
+[ 2026-07-23 14:07:36,413 ] INFO - Model evaluation completed successfully.
