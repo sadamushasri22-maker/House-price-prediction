@@ -266,7 +266,6 @@ export default function App() {
                 <FinancialCalculatorsCard prediction={prediction} />
               </>
             )}
-            <ModelMetricsCard realMetrics={realMetrics} />
           </div>
         </div>
       </main>
