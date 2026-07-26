@@ -1,33 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Building2,
-  Sliders,
-  Bed,
-  Bath,
-  Maximize,
-  Square,
-  ArrowUp,
-  ArrowDown,
-  MapPin,
-  Mail,
-  Droplets,
-  Eye,
-  Star,
-  Hammer,
-  PaintRoller,
-  Wand2,
-  CheckCircle2,
-  TrendingUp,
-  ShieldCheck,
-  Lightbulb,
-  Cpu,
-  Loader2,
-  User,
-  LogOut,
-  History,
-  Lock,
-  X
-} from 'lucide-react';
+import Navbar from './components/Navbar';
+import PropertyForm from './components/PropertyForm';
+import ValuationResultCard from './components/ValuationResultCard';
+import FeatureImportanceCard from './components/FeatureImportanceCard';
+import FinancialCalculatorsCard from './components/FinancialCalculatorsCard';
+import BatchPredictionCard from './components/BatchPredictionCard';
+import ModelMetricsCard from './components/ModelMetricsCard';
+import AuthModal from './components/AuthModal';
+import HistoryDrawer from './components/HistoryDrawer';
 
 const CITIES = [
   "Algona", "Auburn", "Beaux Arts", "Bellevue", "Black Diamond", "Bothell", "Burien",
@@ -69,6 +49,7 @@ export default function App() {
 
   const [loading, setLoading] = useState(false);
   const [prediction, setPrediction] = useState(null);
+  const [realMetrics, setRealMetrics] = useState(null);
   
   // Auth & Database State
   const [user, setUser] = useState(null);
@@ -79,6 +60,16 @@ export default function App() {
   const [showHistory, setShowHistory] = useState(false);
 
   useEffect(() => {
+    // Load real metrics from backend API
+    fetch('/api/metrics')
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success' && data.metrics) {
+          setRealMetrics(data.metrics);
+        }
+      })
+      .catch(err => console.warn('Metrics API load fallback', err));
+
     // Load persisted user session from localStorage
     const savedUser = localStorage.getItem('estimahouse_user');
     if (savedUser) {
@@ -222,395 +213,74 @@ export default function App() {
         <div className="glow-sphere sphere-3"></div>
       </div>
 
-      {/* Navigation Header */}
-      <header className="navbar">
-        <div className="nav-container">
-          <div className="logo">
-            <Building2 className="logo-icon" size={28} />
-            <span className="logo-text">EstimaHouse<span className="logo-accent">.AI</span></span>
-          </div>
-          <div className="nav-badges">
-            <span className="badge badge-pulse">
-              <span className="pulse-dot"></span> ML Ensemble Active
-            </span>
+      {/* Navigation Bar */}
+      <Navbar
+        user={user}
+        historyCount={history.length}
+        showHistory={showHistory}
+        setShowHistory={setShowHistory}
+        onOpenAuth={() => setShowAuthModal(true)}
+        onLogout={handleLogout}
+        realMetrics={realMetrics}
+      />
 
-            {user ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <button
-                  className="badge badge-accent"
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => setShowHistory(!showHistory)}
-                >
-                  <History size={14} /> History ({history.length})
-                </button>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.06)', padding: '0.35rem 0.75rem', borderRadius: '50px' }}>
-                  <User size={14} color="#3b82f6" />
-                  <span style={{ fontSize: '0.85rem', fontWeight: '600' }}>{user.name}</span>
-                  <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center' }} title="Log Out">
-                    <LogOut size={14} />
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <button className="badge badge-accent" style={{ cursor: 'pointer' }} onClick={() => setShowAuthModal(true)}>
-                <User size={14} /> Sign In / Login
-              </button>
-            )}
-          </div>
-        </div>
-      </header>
-
-      {/* Main Container */}
+      {/* Main Content */}
       <main className="main-container">
         <section className="hero-section">
           <h1 className="hero-title">EstimaHouse <span className="gradient-text">Valuation Engine</span></h1>
-          <p className="hero-subtitle">Instant, high-precision house price estimation powered by CatBoost, LightGBM, XGBoost, and SQLite database intelligence.</p>
+          <p className="hero-subtitle">Instant, high-precision house price estimation powered by XGBoost, CatBoost, LightGBM, and SHAP analytics.</p>
         </section>
 
         {/* History Panel Drawer */}
-        {showHistory && user && (
-          <div className="glass-card" style={{ marginBottom: '2rem', border: '1px solid rgba(59, 130, 246, 0.4)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.75rem' }}>
-              <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.1rem', fontWeight: '700' }}>
-                <History size={18} color="#3b82f6" /> Saved Valuation History ({user.email})
-              </h3>
-              <button onClick={() => setShowHistory(false)} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer' }}>
-                <X size={18} />
-              </button>
-            </div>
-            {history.length === 0 ? (
-              <p style={{ color: '#94a3b8', fontSize: '0.9rem' }}>No saved predictions yet. Generate an estimate to log it in the database!</p>
-            ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '0.85rem' }}>
-                {history.map((h, i) => (
-                  <div key={i} style={{ background: 'rgba(15,23,42,0.6)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', padding: '0.85rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
-                      <span>{h.city}, WA {h.zipcode}</span>
-                      <span>{h.created_at}</span>
-                    </div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: '800', color: '#10b981' }}>
-                      ${Number(h.estimated_price).toLocaleString('en-US')}
-                    </div>
-                    <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.2rem' }}>
-                      {h.sqft_living} sqft • {h.bedrooms} Bed • {h.bathrooms} Bath
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+        <HistoryDrawer
+          show={showHistory}
+          onClose={() => setShowHistory(false)}
+          user={user}
+          history={history}
+        />
 
         <div className="app-grid">
-          {/* Parameter Input Form */}
-          <div className="glass-card form-card">
-            <div className="card-header">
-              <h2 className="card-title"><Sliders size={22} color="#3b82f6" /> Property Parameters</h2>
-              <p className="card-desc">Enter property details below for an instant ML valuation.</p>
-            </div>
-
-            <form onSubmit={handlePredict}>
-              {/* Section 1: Specifications */}
-              <div className="form-section">
-                <h3 className="section-title"><Bed size={16} color="#8b5cf6" /> Core Specifications</h3>
-                <div className="input-grid grid-3">
-                  <div className="input-group">
-                    <label>Bedrooms</label>
-                    <div className="input-wrapper">
-                      <Bed className="input-icon" size={16} />
-                      <input type="number" name="bedrooms" min="1" max="10" value={formData.bedrooms} onChange={handleChange} required />
-                    </div>
-                  </div>
-                  <div className="input-group">
-                    <label>Bathrooms</label>
-                    <div className="input-wrapper">
-                      <Bath className="input-icon" size={16} />
-                      <input type="number" name="bathrooms" step="0.25" min="0.5" max="10" value={formData.bathrooms} onChange={handleChange} required />
-                    </div>
-                  </div>
-                  <div className="input-group">
-                    <label>Floors</label>
-                    <div className="input-wrapper">
-                      <Building2 className="input-icon" size={16} />
-                      <input type="number" name="floors" step="0.5" min="1" max="4" value={formData.floors} onChange={handleChange} required />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 2: Area & Dimensions */}
-              <div className="form-section">
-                <h3 className="section-title"><Maximize size={16} color="#8b5cf6" /> Living Space & Lot (sq. ft.)</h3>
-                <div className="input-grid grid-2">
-                  <div className="input-group">
-                    <label>Living Area (sqft)</label>
-                    <div className="input-wrapper">
-                      <Maximize className="input-icon" size={16} />
-                      <input type="number" name="sqft_living" min="300" max="15000" value={formData.sqft_living} onChange={handleChange} required />
-                    </div>
-                  </div>
-                  <div className="input-group">
-                    <label>Lot Size (sqft)</label>
-                    <div className="input-wrapper">
-                      <Square className="input-icon" size={16} />
-                      <input type="number" name="sqft_lot" min="500" max="500000" value={formData.sqft_lot} onChange={handleChange} required />
-                    </div>
-                  </div>
-                  <div className="input-group">
-                    <label>Above Ground (sqft)</label>
-                    <div className="input-wrapper">
-                      <ArrowUp className="input-icon" size={16} />
-                      <input type="number" name="sqft_above" min="300" max="12000" value={formData.sqft_above} onChange={handleChange} required />
-                    </div>
-                  </div>
-                  <div className="input-group">
-                    <label>Basement (sqft)</label>
-                    <div className="input-wrapper">
-                      <ArrowDown className="input-icon" size={16} />
-                      <input type="number" name="sqft_basement" min="0" max="5000" value={formData.sqft_basement} onChange={handleChange} required />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 3: Location & Feature Ratings */}
-              <div className="form-section">
-                <h3 className="section-title"><MapPin size={16} color="#8b5cf6" /> Location & Ratings</h3>
-                <div className="input-grid grid-2">
-                  <div className="input-group">
-                    <label>City</label>
-                    <div className="input-wrapper">
-                      <MapPin className="input-icon" size={16} />
-                      <select name="city" value={formData.city} onChange={handleChange} required>
-                        {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
-                      </select>
-                    </div>
-                  </div>
-                  <div className="input-group">
-                    <label>Zipcode</label>
-                    <div className="input-wrapper">
-                      <Mail className="input-icon" size={16} />
-                      <select name="zipcode" value={formData.zipcode} onChange={handleChange} required>
-                        {ZIPCODES.map(z => <option key={z} value={z}>WA {z}</option>)}
-                      </select>
-                    </div>
-                  </div>
-                  <div className="input-group">
-                    <label>Waterfront Property</label>
-                    <div className="input-wrapper">
-                      <Droplets className="input-icon" size={16} />
-                      <select name="waterfront" value={formData.waterfront} onChange={handleChange} required>
-                        <option value={0}>No (Standard Property)</option>
-                        <option value={1}>Yes (Waterfront Access)</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className="input-group">
-                    <label>View Rating (0 - 4)</label>
-                    <div className="input-wrapper">
-                      <Eye className="input-icon" size={16} />
-                      <select name="view" value={formData.view} onChange={handleChange} required>
-                        <option value={0}>0 - Standard View</option>
-                        <option value={1}>1 - Fair View</option>
-                        <option value={2}>2 - Good View</option>
-                        <option value={3}>3 - Excellent View</option>
-                        <option value={4}>4 - Premium View</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className="input-group full-width">
-                    <label>Property Condition (1 - 5)</label>
-                    <div className="input-wrapper">
-                      <Star className="input-icon" size={16} />
-                      <select name="condition" value={formData.condition} onChange={handleChange} required>
-                        <option value={1}>1 - Poor / Fixer Upper</option>
-                        <option value={2}>2 - Fair Condition</option>
-                        <option value={3}>3 - Good / Average</option>
-                        <option value={4}>4 - Very Good</option>
-                        <option value={5}>5 - Excellent / Turnkey</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 4: Construction & Renovation */}
-              <div className="form-section">
-                <h3 className="section-title"><Hammer size={16} color="#8b5cf6" /> Age & Renovation</h3>
-                <div className="input-grid grid-2">
-                  <div className="input-group">
-                    <label>Year Built</label>
-                    <div className="input-wrapper">
-                      <Hammer className="input-icon" size={16} />
-                      <input type="number" name="yr_built" min="1900" max="2026" value={formData.yr_built} onChange={handleChange} required />
-                    </div>
-                  </div>
-                  <div className="input-group">
-                    <label>Year Renovated (0 if none)</label>
-                    <div className="input-wrapper">
-                      <PaintRoller className="input-icon" size={16} />
-                      <input type="number" name="yr_renovated" min="0" max="2026" value={formData.yr_renovated} onChange={handleChange} required />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <button type="submit" disabled={loading} className="btn btn-primary btn-block">
-                {loading ? (
-                  <span><Loader2 className="animate-spin" size={18} /> Estimating Value...</span>
-                ) : (
-                  <span><Wand2 size={18} /> Calculate EstimaHouse Value</span>
-                )}
-              </button>
-            </form>
+          {/* Left Column: Parameter Form & Batch CSV Engine */}
+          <div>
+            <PropertyForm
+              formData={formData}
+              onChange={handleChange}
+              onSubmit={handlePredict}
+              loading={loading}
+              CITIES={CITIES}
+              ZIPCODES={ZIPCODES}
+            />
+            <BatchPredictionCard />
           </div>
 
-          {/* Results Display Column */}
+          {/* Right Column: Result Card, Feature Importance, Financial Suite, Model Metrics */}
           <div className="results-column">
-            <div className={`glass-card result-card ${!prediction ? 'empty-state' : ''}`}>
-              {prediction ? (
-                <div>
-                  <div className="result-header">
-                    <span className="result-tag"><CheckCircle2 size={14} /> Valuation Complete</span>
-                    <h3 className="result-subtitle">EstimaHouse Value</h3>
-                  </div>
-
-                  <div className="price-display">
-                    <span className="currency-symbol">$</span>
-                    <span>{prediction.toLocaleString('en-US')}</span>
-                  </div>
-
-                  <div className="range-box">
-                    <div className="range-label">Estimated Confidence Interval (&plusmn;7%)</div>
-                    <div className="range-values">
-                      <span>${Math.round(prediction * 0.93).toLocaleString('en-US')}</span>
-                      <span className="range-separator">&mdash;</span>
-                      <span>${Math.round(prediction * 1.07).toLocaleString('en-US')}</span>
-                    </div>
-                  </div>
-
-                  <div className="metrics-grid">
-                    <div className="metric-box">
-                      <div className="metric-icon"><TrendingUp size={18} /></div>
-                      <div className="metric-info">
-                        <span className="metric-title">Price per Sqft</span>
-                        <span className="metric-value">${(prediction / formData.sqft_living).toFixed(2)} / sqft</span>
-                      </div>
-                    </div>
-                    <div className="metric-box">
-                      <div className="metric-icon"><ShieldCheck size={18} /></div>
-                      <div className="metric-info">
-                        <span className="metric-title">Model Confidence</span>
-                        <span className="metric-value">84.2% Accuracy</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="breakdown-card">
-                    <h4 className="breakdown-title"><Lightbulb size={16} color="#f59e0b" /> Key Price Drivers</h4>
-                    <ul className="breakdown-list">
-                      <li>
-                        <span className="driver-name">Location ({formData.city}, WA {formData.zipcode}):</span>
-                        <span className="driver-impact positive">High Market Signal</span>
-                      </li>
-                      <li>
-                        <span className="driver-name">Living Space ({formData.sqft_living} sqft):</span>
-                        <span className="driver-impact positive">+ Primary Driver</span>
-                      </li>
-                      <li>
-                        <span className="driver-name">Waterfront / View Rating:</span>
-                        <span className={`driver-impact ${formData.waterfront || formData.view > 0 ? 'positive' : 'neutral'}`}>
-                          {formData.waterfront ? 'Waterfront Premium' : formData.view > 0 ? `View Level ${formData.view}` : 'Standard View'}
-                        </span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              ) : (
-                <div className="placeholder-content">
-                  <div className="placeholder-icon">
-                    <Building2 size={32} />
-                  </div>
-                  <h3>EstimaHouse AI Ready</h3>
-                  <p>Fill out the property specifications on the left and click <strong>Calculate EstimaHouse Value</strong> for real-time valuation.</p>
-                </div>
-              )}
-            </div>
-
-            <div className="glass-card info-card">
-              <div className="info-card-header">
-                <Cpu size={18} color="#8b5cf6" />
-                <h4>EstimaHouse ML Engine Architecture</h4>
-              </div>
-              <div className="stats-row">
-                <div className="stat-item">
-                  <span className="stat-val">84.2%</span>
-                  <span className="stat-lbl">Prediction Accuracy</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-val">83.5%</span>
-                  <span className="stat-lbl">Log-$R^2$ Variance</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-val">Ensemble</span>
-                  <span className="stat-lbl">CatBoost & LightGBM</span>
-                </div>
-              </div>
-            </div>
+            <ValuationResultCard
+              prediction={prediction}
+              formData={formData}
+              realMetrics={realMetrics}
+            />
+            {prediction && (
+              <>
+                <FeatureImportanceCard formData={formData} />
+                <FinancialCalculatorsCard prediction={prediction} />
+              </>
+            )}
+            <ModelMetricsCard realMetrics={realMetrics} />
           </div>
         </div>
       </main>
 
-      {/* Auth Sign-In / Login Modal */}
-      {showAuthModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(10px)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div className="glass-card" style={{ width: '90%', maxWidth: '420px', position: 'relative' }}>
-            <button onClick={() => setShowAuthModal(false)} style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer' }}>
-              <X size={20} />
-            </button>
-            <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-              <div style={{ width: '50px', height: '50px', background: 'rgba(59,130,246,0.15)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 0.75rem', color: '#3b82f6' }}>
-                <Lock size={24} />
-              </div>
-              <h3 style={{ fontSize: '1.3rem', fontWeight: '700' }}>Sign In / Account Login</h3>
-              <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginTop: '0.25rem' }}>Enter your email to save predictions & view history</p>
-            </div>
-
-            <form onSubmit={handleManualEmailLogin} style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-              <div className="input-group">
-                <label>Your Email Address</label>
-                <div className="input-wrapper">
-                  <Mail className="input-icon" size={16} />
-                  <input
-                    type="email"
-                    placeholder="user@example.com"
-                    value={authEmail}
-                    onChange={(e) => setAuthEmail(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="input-group">
-                <label>Your Name (Optional)</label>
-                <div className="input-wrapper">
-                  <User className="input-icon" size={16} />
-                  <input
-                    type="text"
-                    placeholder="John Doe"
-                    value={authName}
-                    onChange={(e) => setAuthName(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <button type="submit" className="btn btn-primary btn-block">
-                Sign In & Save Predictions
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
+      {/* Auth Modal */}
+      <AuthModal
+        show={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        authEmail={authEmail}
+        setAuthEmail={setAuthEmail}
+        authName={authName}
+        setAuthName={setAuthName}
+        onSubmit={handleManualEmailLogin}
+      />
 
       <footer className="footer">
         <p>&copy; 2026 EstimaHouse AI. Intelligent Real Estate Valuation Platform.</p>

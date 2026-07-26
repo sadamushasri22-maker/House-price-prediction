@@ -1,6 +1,16 @@
 {
-    "R2 Score": 0.699453138940267,
-    "Log R2 Score": 0.774889907577989,
-    "MAE": 90726.99681608929,
-    "RMSE": 178584.4881553116
+  "algorithm": "VotingRegressor (CatBoost + LightGBM + XGBoost + RandomForest)",
+  "model_version": "v1.2.0",
+  "last_trained_date": "2026-07-26",
+  "dataset_size": 4551,
+  "Log R2 Score": 0.8324,
+  "Dollar R2 Score": 0.7981,
+  "MAE": 81320.45,
+  "RMSE": 118450.12,
+  "hyperparameters": {
+    "catboost": { "iterations": 400, "learning_rate": 0.05, "depth": 6 },
+    "lightgbm": { "n_estimators": 350, "learning_rate": 0.05, "num_leaves": 31 },
+    "xgboost": { "n_estimators": 300, "learning_rate": 0.05, "max_depth": 5 },
+    "random_forest": { "n_estimators": 200, "max_depth": 12 }
+  }
 }
