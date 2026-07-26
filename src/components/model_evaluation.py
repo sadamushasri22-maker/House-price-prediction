@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import pickle
+import numpy as np
 
 from sklearn.metrics import (
     r2_score,
@@ -25,32 +26,25 @@ class ModelEvaluation:
         test_array,
         test_target,
     ):
-
         try:
-
             # Load trained model
             with open(model_path, "rb") as file:
-             model = pickle.load(file)
+                model = pickle.load(file)
 
-            # Make predictions
-            predictions = model.predict(test_array)
+            # Predictions (model outputs log scale)
+            predictions_log = model.predict(test_array)
+            predictions = np.expm1(predictions_log)
 
             r2 = r2_score(test_target, predictions)
+            mae = mean_absolute_error(test_target, predictions)
+            mse = mean_squared_error(test_target, predictions)
+            rmse = float(mse ** 0.5)
 
-            mae = mean_absolute_error(
-              test_target,
-              predictions,
-            )
-
-            mse = mean_squared_error(
-            test_target,
-            predictions,
-              )
-
-            rmse = mse ** 0.5
+            r2_log = r2_score(np.log1p(test_target), predictions_log)
 
             metrics = {
                 "R2 Score": float(r2),
+                "Log R2 Score": float(r2_log),
                 "MAE": float(mae),
                 "RMSE": float(rmse),
             }
@@ -63,9 +57,10 @@ class ModelEvaluation:
                 json.dump(metrics, file, indent=4)
 
             print("\nModel Evaluation Completed")
-            print(metrics)
+            print(json.dumps(metrics, indent=4))
 
             logging.info("Model evaluation completed successfully.")
+            return metrics
 
         except Exception as e:
-            raise CustomException(e, sys)
+            raise CustomException(e, sys)

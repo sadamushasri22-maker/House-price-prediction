@@ -1,0 +1,11 @@
+{
+  "name": "estimahouse-ai-root",
+  "private": true,
+  "version": "1.0.0",
+  "description": "EstimaHouse AI Root Development Wrapper",
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "start": "python backend/app.py"
+  }
+}

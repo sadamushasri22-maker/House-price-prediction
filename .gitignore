@@ -1,8 +1,32 @@
+# Environments & Virtual Envs
+.venv/
+.venv*/
 venv/
+ENV/
+env/
+
+# Python Cache & Compiled Files
 __pycache__/
 *.pyc
-artifacts/
+*.pyo
+*.pyd
+.pytest_cache/
+
+# ML Artifacts & Training Logs
+catboost_info/
+logs/
+*.log
 mlruns/
-.env
-.DS_Store
 .ipynb_checkpoints/
+
+# Node.js & Frontend Build Outputs
+node_modules/
+dist/
+.env
+.env.local
+
+# System & IDE Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

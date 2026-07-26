@@ -20,8 +20,10 @@ class DataIngestion:
             #df = pd.read_csv(self.config.input_data_path)
             df = pd.read_csv(self.config.input_data_path)
 
-# Remove invalid rows
+            # Remove zero prices and extreme price outliers for clean market training
             df = df[df["price"] > 0].reset_index(drop=True)
+            q_cap = df["price"].quantile(0.996)
+            df = df[df["price"] <= q_cap].reset_index(drop=True)
 
             os.makedirs(self.config.root_dir, exist_ok=True)
 

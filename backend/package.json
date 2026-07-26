@@ -1,0 +1,10 @@
+{
+  "name": "estimahouse-ai-backend",
+  "private": true,
+  "version": "1.0.0",
+  "description": "EstimaHouse AI Backend Python Flask Server Wrapper",
+  "scripts": {
+    "dev": "python app.py",
+    "start": "python app.py"
+  }
+}

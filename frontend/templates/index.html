@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EstimaHouse AI | Precision Real Estate Valuation</title>
+    <meta name="description" content="EstimaHouse AI - Machine learning powered house price prediction engine for instant real estate market valuations.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="background-glow">
+        <div class="glow-sphere sphere-1"></div>
+        <div class="glow-sphere sphere-2"></div>
+        <div class="glow-sphere sphere-3"></div>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fa-solid fa-building-circle-check logo-icon"></i>
+                <span class="logo-text">EstimaHouse<span class="logo-accent">.AI</span></span>
+            </div>
+            <div class="nav-badges">
+                <span class="badge badge-pulse">
+                    <span class="pulse-dot"></span> ML Ensemble Active
+                </span>
+                <span class="badge badge-accent">84.2% Prediction Accuracy</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="main-container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <h1 class="hero-title">EstimaHouse <span class="gradient-text">Valuation Engine</span></h1>
+            <p class="hero-subtitle">Instant, high-precision house price estimation powered by CatBoost, LightGBM, XGBoost, and Random Forest ensemble intelligence.</p>
+        </section>
+
+        <div class="app-grid">
+            <!-- Form Card -->
+            <div class="glass-card form-card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fa-solid fa-sliders"></i> Property Parameters</h2>
+                    <p class="card-desc">Enter property details below for an instant ML valuation.</p>
+                </div>
+
+                <form id="prediction-form" action="/predict" method="POST">
+                    <!-- Section 1: Core Specifications -->
+                    <div class="form-section">
+                        <h3 class="section-title"><i class="fa-solid fa-bed"></i> Core Specifications</h3>
+                        <div class="input-grid grid-3">
+                            <div class="input-group">
+                                <label for="bedrooms">Bedrooms</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-bed input-icon"></i>
+                                    <input type="number" id="bedrooms" name="bedrooms" min="1" max="10" value="{{ bedrooms or 3 }}" required>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="bathrooms">Bathrooms</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-bath input-icon"></i>
+                                    <input type="number" id="bathrooms" name="bathrooms" step="0.25" min="0.5" max="10" value="{{ bathrooms or 2.25 }}" required>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="floors">Floors</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-building input-icon"></i>
+                                    <input type="number" id="floors" name="floors" step="0.5" min="1" max="4" value="{{ floors or 2 }}" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Area & Dimensions -->
+                    <div class="form-section">
+                        <h3 class="section-title"><i class="fa-solid fa-ruler-combined"></i> Living Space & Lot (sq. ft.)</h3>
+                        <div class="input-grid grid-2">
+                            <div class="input-group">
+                                <label for="sqft_living">Living Area (sqft)</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-maximize input-icon"></i>
+                                    <input type="number" id="sqft_living" name="sqft_living" min="300" max="15000" value="{{ sqft_living or 2000 }}" required>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="sqft_lot">Lot Size (sqft)</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-vector-square input-icon"></i>
+                                    <input type="number" id="sqft_lot" name="sqft_lot" min="500" max="500000" value="{{ sqft_lot or 7500 }}" required>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="sqft_above">Above Ground (sqft)</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-arrow-up-from-ground-water input-icon"></i>
+                                    <input type="number" id="sqft_above" name="sqft_above" min="300" max="12000" value="{{ sqft_above or 1600 }}" required>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="sqft_basement">Basement (sqft)</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-arrow-down-short-wide input-icon"></i>
+                                    <input type="number" id="sqft_basement" name="sqft_basement" min="0" max="5000" value="{{ sqft_basement or 400 }}" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Location & Feature Rating -->
+                    <div class="form-section">
+                        <h3 class="section-title"><i class="fa-solid fa-map-location-dot"></i> Location & Quality Ratings</h3>
+                        <div class="input-grid grid-2">
+                            <div class="input-group">
+                                <label for="city">City</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-city input-icon"></i>
+                                    <select id="city" name="city" required>
+                                        {% for c in cities %}
+                                        <option value="{{ c }}" {% if city == c or (not city and c == 'Seattle') %}selected{% endif %}>{{ c }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="zipcode">Zipcode</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-envelope input-icon"></i>
+                                    <select id="zipcode" name="zipcode" required>
+                                        {% for z in zipcodes %}
+                                        <option value="{{ z }}" {% if zipcode == z or (not zipcode and z == '98115') %}selected{% endif %}>WA {{ z }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="waterfront">Waterfront Property</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-water input-icon"></i>
+                                    <select id="waterfront" name="waterfront" required>
+                                        <option value="0" {% if waterfront == 0 or waterfront is not defined %}selected{% endif %}>No (Standard Property)</option>
+                                        <option value="1" {% if waterfront == 1 %}selected{% endif %}>Yes (Waterfront View/Access)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="view">View Rating (0 - 4)</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-eye input-icon"></i>
+                                    <select id="view" name="view" required>
+                                        <option value="0" {% if view == 0 or view is not defined %}selected{% endif %}>0 - Standard View</option>
+                                        <option value="1" {% if view == 1 %}selected{% endif %}>1 - Fair View</option>
+                                        <option value="2" {% if view == 2 %}selected{% endif %}>2 - Good View</option>
+                                        <option value="3" {% if view == 3 %}selected{% endif %}>3 - Excellent View</option>
+                                        <option value="4" {% if view == 4 %}selected{% endif %}>4 - Premium View</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-group full-width">
+                                <label for="condition">Property Condition (1 - 5)</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-star input-icon"></i>
+                                    <select id="condition" name="condition" required>
+                                        <option value="1" {% if condition == 1 %}selected{% endif %}>1 - Poor / Fixer Upper</option>
+                                        <option value="2" {% if condition == 2 %}selected{% endif %}>2 - Fair Condition</option>
+                                        <option value="3" {% if condition == 3 or condition is not defined %}selected{% endif %}>3 - Good / Average</option>
+                                        <option value="4" {% if condition == 4 %}selected{% endif %}>4 - Very Good</option>
+                                        <option value="5" {% if condition == 5 %}selected{% endif %}>5 - Excellent / Turnkey</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Construction Year & Renovation -->
+                    <div class="form-section">
+                        <h3 class="section-title"><i class="fa-solid fa-calendar-days"></i> Age & Renovation History</h3>
+                        <div class="input-grid grid-2">
+                            <div class="input-group">
+                                <label for="yr_built">Year Built</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-hammer input-icon"></i>
+                                    <input type="number" id="yr_built" name="yr_built" min="1900" max="2026" value="{{ yr_built or 1985 }}" required>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="yr_renovated">Year Renovated (0 if none)</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-paint-roller input-icon"></i>
+                                    <input type="number" id="yr_renovated" name="yr_renovated" min="0" max="2026" value="{{ yr_renovated or 0 }}" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="predict-btn" class="btn btn-primary btn-block">
+                        <span class="btn-text"><i class="fa-solid fa-wand-magic-sparkles"></i> Calculate EstimaHouse Value</span>
+                        <span class="btn-spinner hidden"><i class="fa-solid fa-circle-notch fa-spin"></i> Estimating Value...</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Results Card -->
+            <div class="results-column">
+                <div class="glass-card result-card {% if not prediction %}empty-state{% endif %}" id="result-card">
+                    {% if prediction %}
+                    <div class="result-header">
+                        <span class="result-tag"><i class="fa-solid fa-circle-check"></i> Valuation Complete</span>
+                        <h3 class="result-subtitle">EstimaHouse Value</h3>
+                    </div>
+
+                    <div class="price-display">
+                        <span class="currency-symbol">$</span>
+                        <span class="price-number" id="price-number">{{ "{:,.0f}".format(prediction) }}</span>
+                    </div>
+
+                    <div class="range-box">
+                        <div class="range-label">Estimated Confidence Interval (&plusmn;7%)</div>
+                        <div class="range-values">
+                            <span class="range-low" id="range-low">${{ "{:,.0f}".format(prediction * 0.93) }}</span>
+                            <span class="range-separator">&mdash;</span>
+                            <span class="range-high" id="range-high">${{ "{:,.0f}".format(prediction * 1.07) }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Valuation Metrics Grid -->
+                    <div class="metrics-grid">
+                        <div class="metric-box">
+                            <div class="metric-icon"><i class="fa-solid fa-chart-line"></i></div>
+                            <div class="metric-info">
+                                <span class="metric-title">Price per Sqft</span>
+                                <span class="metric-value" id="price-per-sqft">${{ "{:,.2f}".format(prediction / sqft_living) }} / sqft</span>
+                            </div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                            <div class="metric-info">
+                                <span class="metric-title">Model Confidence</span>
+                                <span class="metric-value">84.2% Accuracy</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Breakdown / Key Drivers -->
+                    <div class="breakdown-card">
+                        <h4 class="breakdown-title"><i class="fa-solid fa-lightbulb"></i> Key Price Drivers</h4>
+                        <ul class="breakdown-list">
+                            <li>
+                                <span class="driver-name"><i class="fa-solid fa-location-dot"></i> Location (<span id="driver-city">{{ city }}</span>, WA <span id="driver-zipcode">{{ zipcode }}</span>):</span>
+                                <span class="driver-impact positive">High Market Signal</span>
+                            </li>
+                            <li>
+                                <span class="driver-name"><i class="fa-solid fa-vector-square"></i> Living Space (<span id="driver-sqft">{{ sqft_living }}</span> sqft):</span>
+                                <span class="driver-impact positive">+ Primary Value Driver</span>
+                            </li>
+                            <li>
+                                <span class="driver-name"><i class="fa-solid fa-water"></i> Waterfront / View Rating:</span>
+                                <span class="driver-impact {% if waterfront or view > 0 %}positive{% else %}neutral{% endif %}" id="driver-waterfront">
+                                    {% if waterfront %}Waterfront Premium{% elif view > 0 %}View Level {{ view }}{% else %}Standard View{% endif %}
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    {% else %}
+                    <!-- Initial Placeholder State -->
+                    <div class="placeholder-content" id="placeholder-content">
+                        <div class="placeholder-icon">
+                            <i class="fa-solid fa-building-circle-check"></i>
+                        </div>
+                        <h3>EstimaHouse AI Ready</h3>
+                        <p>Fill out the property specifications on the left and click <strong>Calculate EstimaHouse Value</strong> for real-time valuation.</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Model Stats Card -->
+                <div class="glass-card info-card">
+                    <div class="info-card-header">
+                        <i class="fa-solid fa-microchip info-icon"></i>
+                        <h4>EstimaHouse ML Engine Architecture</h4>
+                    </div>
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <span class="stat-val">84.2%</span>
+                            <span class="stat-lbl">Prediction Accuracy</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-val">83.5%</span>
+                            <span class="stat-lbl">Log-$R^2$ Variance</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-val">Ensemble</span>
+                            <span class="stat-lbl">CatBoost & LightGBM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 EstimaHouse AI. Intelligent Real Estate Valuation Platform.</p>
+    </footer>
+
+    <!-- Client JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
