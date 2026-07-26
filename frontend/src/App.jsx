@@ -238,8 +238,9 @@ export default function App() {
           history={history}
         />
 
+        {/* Top Two-Column Grid */}
         <div className="app-grid">
-          {/* Left Column: Parameter Form & Batch CSV Engine */}
+          {/* Left Column: Parameter Input Form */}
           <div>
             <PropertyForm
               formData={formData}
@@ -249,10 +250,9 @@ export default function App() {
               CITIES={CITIES}
               ZIPCODES={ZIPCODES}
             />
-            <BatchPredictionCard />
           </div>
 
-          {/* Right Column: Result Card, Feature Importance & Financial Suite */}
+          {/* Right Column: Result Card & SHAP Feature Importance */}
           <div className="results-column">
             <ValuationResultCard
               prediction={prediction}
@@ -260,8 +260,13 @@ export default function App() {
               realMetrics={realMetrics}
             />
             <FeatureImportanceCard formData={formData} />
-            <FinancialCalculatorsCard prediction={prediction} />
           </div>
+        </div>
+
+        {/* Bottom Level Grid: Batch CSV & Financial Calculators (Exact Horizontal Alignment) */}
+        <div className="bottom-equal-grid">
+          <BatchPredictionCard />
+          <FinancialCalculatorsCard prediction={prediction} />
         </div>
       </main>
 

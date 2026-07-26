@@ -212,8 +212,25 @@ body {
     align-items: start;
 }
 
+/* Bottom Equal Grid for Level Alignment */
+.bottom-equal-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 2.5rem;
+    margin-top: 2.5rem;
+    align-items: stretch;
+}
+
+.bottom-equal-grid > .glass-card {
+    height: 100%;
+    margin-top: 0 !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 @media (max-width: 1024px) {
-    .app-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .app-grid, .bottom-equal-grid { grid-template-columns: 1fr; gap: 2rem; }
 }
 
 /* Glass Card Component */
