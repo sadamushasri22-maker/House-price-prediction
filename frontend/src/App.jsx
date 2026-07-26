@@ -5,7 +5,6 @@ import ValuationResultCard from './components/ValuationResultCard';
 import FeatureImportanceCard from './components/FeatureImportanceCard';
 import FinancialCalculatorsCard from './components/FinancialCalculatorsCard';
 import BatchPredictionCard from './components/BatchPredictionCard';
-import ModelMetricsCard from './components/ModelMetricsCard';
 import AuthModal from './components/AuthModal';
 import HistoryDrawer from './components/HistoryDrawer';
 
@@ -253,19 +252,15 @@ export default function App() {
             <BatchPredictionCard />
           </div>
 
-          {/* Right Column: Result Card, Feature Importance, Financial Suite, Model Metrics */}
+          {/* Right Column: Result Card, Feature Importance & Financial Suite */}
           <div className="results-column">
             <ValuationResultCard
               prediction={prediction}
               formData={formData}
               realMetrics={realMetrics}
             />
-            {prediction && (
-              <>
-                <FeatureImportanceCard formData={formData} />
-                <FinancialCalculatorsCard prediction={prediction} />
-              </>
-            )}
+            <FeatureImportanceCard formData={formData} />
+            <FinancialCalculatorsCard prediction={prediction} />
           </div>
         </div>
       </main>
