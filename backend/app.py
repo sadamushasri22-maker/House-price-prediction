@@ -106,6 +106,18 @@ def index():
     return render_template("index.html", cities=CITIES, zipcodes=ZIPCODES, prediction=None)
 
 
+@app.route("/<path:filename>", methods=["GET"])
+def serve_static(filename):
+    if filename.startswith("api/"):
+        return jsonify({"status": "error", "message": "API route not found"}), 404
+    if os.path.exists(os.path.join(dist_folder, filename)):
+        return send_from_directory(dist_folder, filename)
+    if os.path.exists(os.path.join(dist_folder, "index.html")):
+        return send_from_directory(dist_folder, "index.html")
+    return jsonify({"status": "error", "message": "Not found"}), 404
+
+
+
 @app.route("/api/auth/login", methods=["POST"])
 def auth_login():
     try:
