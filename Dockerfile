@@ -33,5 +33,5 @@ EXPOSE 5000
 ENV PORT=5000 \
     PYTHONUNBUFFERED=1
 
-# Start production gunicorn server
-CMD ["gunicorn", "backend.app:app", "--bind", "0.0.0.0:5000", "--workers", "2", "--threads", "4", "--timeout", "120"]
+CMD exec gunicorn backend.app:app --bind "0.0.0.0:${PORT:-5000}" --workers 2 --threads 4 --timeout 120
+
